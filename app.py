@@ -17,16 +17,28 @@ def main():
     st.sidebar.title('Navigation')
     page = st.sidebar.selectbox('Select Page:', ['Overview', 'Customer Segmentation', 'Sales Forecasting'])
 
-    # File uploader
-    uploaded_file = st.file_uploader("Upload your Excel file", type=["xlsx"])
-    if uploaded_file is not None:
-        data = pd.read_excel(uploaded_file)
-        st.success("File uploaded successfully!")
+    try:
+        # Replace 'path_to_your_dataset.csv' with the actual path to your dataset
+        dataset_path = 'OnlineRetail.csv'  # Provide the path to your dataset
+        data = pd.read_csv(dataset_path, encoding='utf-8')
+        st.success("Dataset loaded successfully!")
+    except FileNotFoundError:
+        st.error(f"Dataset not found at {dataset_path}. Please check the file path.")
+    except UnicodeDecodeError:
+        try:
+            # Fallback to another encoding if utf-8 fails
+            data = pd.read_csv(dataset_path, encoding='ISO-8859-1')
+            st.success("Dataset loaded successfully with ISO-8859-1 encoding!")
+        except Exception as e:
+            st.error(f"An error occurred while loading the dataset: {e}")
 
-        # Adjust column names if changed
-        expected_columns = ['CustomerID', 'Quantity', 'UnitPrice', 'InvoiceDate', 'InvoiceNo']
-        missing_columns = [col for col in expected_columns if col not in data.columns]
-        
+        # Expected columns
+        expected_columns = ['InvoiceNo', 'StockCode', 'Description', 'Quantity', 
+                            'InvoiceDate', 'UnitPrice', 'CustomerID', 'Country']
+        actual_columns = data.columns.tolist()
+
+        # Check for missing columns
+        missing_columns = [col for col in expected_columns if col not in actual_columns]
         if missing_columns:
             st.error(f"Dataset is missing required columns: {', '.join(missing_columns)}")
             return
@@ -112,4 +124,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
