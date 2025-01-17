@@ -23,6 +23,14 @@ def main():
         data = pd.read_excel(uploaded_file)
         st.success("File uploaded successfully!")
 
+        # Adjust column names if changed
+        expected_columns = ['CustomerID', 'Quantity', 'UnitPrice', 'InvoiceDate', 'InvoiceNo']
+        missing_columns = [col for col in expected_columns if col not in data.columns]
+        
+        if missing_columns:
+            st.error(f"Dataset is missing required columns: {', '.join(missing_columns)}")
+            return
+
         # Preprocess dataset
         data.dropna(subset=['CustomerID'], inplace=True)
         data = data[data['Quantity'] > 0]
@@ -104,3 +112,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
