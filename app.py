@@ -38,7 +38,7 @@ def main():
     page = st.sidebar.selectbox('Select Page:', ['Overview', 'Customer Segmentation', 'Sales Forecasting'])
 
     # Define the path to the local dataset
-    dataset_path = 'data\OnlineRetail.csv'
+    dataset_path = 'data/OnlineRetail.csv'
 
     
     try:
